@@ -1,6 +1,6 @@
 module.exports = feature;
 
-var _core = require('core');
+var _core = require('./core');
 
 function feature(config) {
 

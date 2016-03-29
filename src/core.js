@@ -7,7 +7,7 @@ module.exports.getVariant = getVariant;
  * @type {object}
  * @private
  */
-var _roller = require('roller');
+var _roller = require('./roller');
 
 /**
  * Feature configuration json
