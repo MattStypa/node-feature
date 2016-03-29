@@ -1,0 +1,39 @@
+{
+    "name": "@dose/feature",
+    "version": "1.0.0",
+    "description": "Simple Feature API enabling rampups and A/B testing.",
+    "license": "MIT",
+    "keywords": [
+        "ab testing",
+        "feature",
+        "rampup"
+    ],
+    "author": {
+        "name": "Matt Stypa",
+        "email": "matt@mattstypa.com",
+        "url": "http://mattstypa.com"
+    },
+    "repository" :
+    {
+        "type": "git",
+        "url": "https://github.com/SpartzInc/Node-Feature.git"
+    },
+    "main": "src/feature.js",
+    "scripts": {
+        "test": "jest",
+        "test-coverage": "jest --coverage",
+        "lint": "jshint src/*.js tests/*.js",
+        "cs": "jscs src/*.js tests/*.js"
+    },
+    "devDependencies": {
+        "jest-cli": "0.8.2",
+        "jshint": "2.9.1",
+        "jscs": "2.11.0"
+    },
+    "jest": {
+        "testDirectoryName": "tests",
+        "unmockedModulePathPatterns": [
+            "<rootDir>/node_modules/"
+        ]
+    }
+}
