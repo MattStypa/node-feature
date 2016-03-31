@@ -24,7 +24,12 @@ describe('feature library', function() {
         },
         'feature_g': {
             'variant_a': 'test'
-        }
+        },
+        'feature_h': [
+            'variant_a',
+            'variant_b',
+            'variant_c',
+        ]
     };
 
     _core.setFeatures(_featureConfig);
@@ -52,10 +57,20 @@ describe('feature library', function() {
         expect(_core.getVariant('context', 'feature_a')).toEqual(null);
     });
 
+    it('auto distributes odds for array of variants', function() {
+        _roller.roll.mockReturnValue(20);
+        expect(_core.getVariant('context', 'feature_h')).toEqual('variant_a');
+
+        _roller.roll.mockReturnValue(50);
+        expect(_core.getVariant('context', 'feature_h')).toEqual('variant_b');
+
+        _roller.roll.mockReturnValue(80);
+        expect(_core.getVariant('context', 'feature_h')).toEqual('variant_c');
+    });
+
     it('gets variant digest', function() {
         _roller.roll.mockReturnValue(30);
         expect(_core.getVariantDigest('context')).toEqual({
-
             'feature_a': null,
             'feature_b': 'on',
             'feature_c': 'variant_c',
@@ -63,6 +78,7 @@ describe('feature library', function() {
             'feature_e': null,
             'feature_f': null,
             'feature_g': null,
+            'feature_h': 'variant_a'
         });
     });
 

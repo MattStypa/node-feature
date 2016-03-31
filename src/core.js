@@ -111,6 +111,7 @@ function _getFeatureId(context, name) {
  * @private
  */
 function _getParsedFeatureConfig(featureConfig) {
+
     // Shorthand
     if (typeof featureConfig !== 'object') {
         return {'on': _getSanitizedOdds(featureConfig)};
@@ -118,8 +119,25 @@ function _getParsedFeatureConfig(featureConfig) {
 
     var parsedFeatureConfig = {};
     var totalOdds = 0;
+    var variant;
 
-    for (var variant in featureConfig) {
+    // Auto distribute
+    if (Array.isArray(featureConfig)) {
+        var autoOdds = 100 / featureConfig.length;
+
+        for (variant in featureConfig) {
+            totalOdds += autoOdds;
+            parsedFeatureConfig[featureConfig[variant]] = totalOdds;
+        }
+
+        // Ensure complete coverage
+        parsedFeatureConfig[featureConfig[variant]] = 100;
+
+        return parsedFeatureConfig;
+    }
+
+    // Full
+    for (variant in featureConfig) {
         totalOdds += _getSanitizedOdds(featureConfig[variant]);
         parsedFeatureConfig[variant] = totalOdds;
     }
