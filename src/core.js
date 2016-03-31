@@ -1,4 +1,5 @@
 module.exports.setFeatures = setFeatures;
+module.exports.applyOverrides = applyOverrides;
 module.exports.getVariant = getVariant;
 module.exports.getVariantDigest = getVariantDigest;
 
@@ -28,10 +29,43 @@ function setFeatures(features) {
         throw Error('Invalid configuration');
     }
 
-    _features = features;
+    _features = {};
 
-    for (var feature in _features) {
-        _features[feature] = _getParsedFeatureConfig(_features[feature]);
+    for (var feature in features) {
+        _features[feature] = _getParsedFeatureConfig(features[feature]);
+    }
+}
+
+/**
+ * Applies overrides to the configuration
+ *
+ * @param {string|object} overrides
+ */
+function applyOverrides(overrides) {
+    var parsedOverrides = {};
+
+    if (typeof overrides === 'object') {
+        parsedOverrides = overrides;
+    } else {
+        // Try to parse JSON from string
+        try {
+            parsedOverrides = JSON.parse(overrides);
+        } catch (e) {
+            parsedOverrides = overrides.split(',').reduce(function(obj, value) {
+                value = value.split(':');
+                if (value.length > 1) {
+                    obj[value[0]] = value[1];
+                } else {
+                    obj[value[0]] = 'on';
+                }
+                return obj;
+            }, {});
+        }
+    }
+
+    for (var feature in parsedOverrides) {
+        _features[feature] = {};
+        _features[feature][parsedOverrides[feature]] = 100;
     }
 }
 
@@ -148,7 +182,7 @@ function _getParsedFeatureConfig(featureConfig) {
 /**
  * Gets a normalized odds
  *
- * @param {number} odds
+ * @param {*} odds
  * @returns {number}
  * @private
  */

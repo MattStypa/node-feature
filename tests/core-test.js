@@ -6,33 +6,41 @@ describe('feature library', function() {
     var _roller = require('../src/roller');
 
     var _featureConfig = {
-        'feature_a': 0,
-        'feature_b': 100,
-        'feature_c': {
-            'variant_a': 0,
-            'variant_b': 20,
-            'variant_c': 20,
-            'variant_d': 60
+        featureA: 0,
+        featureB: 100,
+        featureC: {
+            variantA: 0,
+            variantB: 20,
+            variantC: 20,
+            variantD: 60
         },
-        'feature_d': {
-            'variant_a': 10,
-            'variant_b': 10
+        featureD: {
+            variantA: 10,
+            variantB: 10
         },
-        'feature_e': {},
-        'feature_f': {
-            'variant_a': -100
+        featureE: {},
+        featureF: {
+            variantA: -100
         },
-        'feature_g': {
-            'variant_a': 'test'
+        featureG: {
+            variantA: 'test'
         },
-        'feature_h': [
-            'variant_a',
-            'variant_b',
+        'featureH': [
+            'variantA',
+            'variantB',
             'variant_c',
         ]
     };
 
-    _core.setFeatures(_featureConfig);
+    var _overrides = {
+        featureA: 'variantA',
+        featureC: 'variantE',
+        featureH: 'variantA',
+    };
+
+    beforeEach(function() {
+        _core.setFeatures(_featureConfig);
+    });
 
     it('throws an error when configuration is invalid', function() {
         expect(function() {
@@ -41,63 +49,88 @@ describe('feature library', function() {
     });
 
     it('gets null for feature with no variants', function() {
-        expect(_core.getVariant('context', 'feature_e')).toEqual(null);
+        expect(_core.getVariant('context', 'featureE')).toEqual(null);
     });
 
     it('gets on variant for enabled features', function() {
-        expect(_core.getVariant('context', 'feature_b')).toEqual('on');
+        expect(_core.getVariant('context', 'featureB')).toEqual('on');
     });
 
     it('gets variant for multi-variant features', function() {
         _roller.roll.mockReturnValue(30);
-        expect(_core.getVariant('context', 'feature_c')).toEqual('variant_c');
+        expect(_core.getVariant('context', 'featureC')).toEqual('variantC');
     });
 
     it('gets null variant for disabled features', function() {
-        expect(_core.getVariant('context', 'feature_a')).toEqual(null);
+        expect(_core.getVariant('context', 'featureA')).toEqual(null);
     });
 
     it('auto distributes odds for array of variants', function() {
         _roller.roll.mockReturnValue(20);
-        expect(_core.getVariant('context', 'feature_h')).toEqual('variant_a');
+        expect(_core.getVariant('context', 'featureH')).toEqual('variantA');
 
         _roller.roll.mockReturnValue(50);
-        expect(_core.getVariant('context', 'feature_h')).toEqual('variant_b');
+        expect(_core.getVariant('context', 'featureH')).toEqual('variantB');
 
         _roller.roll.mockReturnValue(80);
-        expect(_core.getVariant('context', 'feature_h')).toEqual('variant_c');
+        expect(_core.getVariant('context', 'featureH')).toEqual('variantC');
     });
 
     it('gets variant digest', function() {
         _roller.roll.mockReturnValue(30);
         expect(_core.getVariantDigest('context')).toEqual({
-            'feature_a': null,
-            'feature_b': 'on',
-            'feature_c': 'variant_c',
-            'feature_d': null,
-            'feature_e': null,
-            'feature_f': null,
-            'feature_g': null,
-            'feature_h': 'variant_a'
+            'featureA': null,
+            'featureB': 'on',
+            'featureC': 'variantC',
+            'featureD': null,
+            'featureE': null,
+            'featureF': null,
+            'featureG': null,
+            'featureH': 'variantA'
         });
     });
 
     it('normalizes negative odds to 0', function() {
         _roller.roll.mockReturnValue(0);
-        expect(_core.getVariant('context', 'feature_f')).toEqual(null);
+        expect(_core.getVariant('context', 'featureF')).toEqual(null);
     });
 
     it('normalizes NaN odds to 0', function() {
         _roller.roll.mockReturnValue(0);
-        expect(_core.getVariant('context', 'feature_g')).toEqual(null);
+        expect(_core.getVariant('context', 'featureG')).toEqual(null);
     });
 
     it('gets null for undefined feature', function() {
-        expect(_core.getVariant('context', 'feature_x')).toEqual(null);
+        expect(_core.getVariant('context', 'featureX')).toEqual(null);
     });
 
     it('gets null if no variant wins', function() {
         _roller.roll.mockReturnValue(30);
-        expect(_core.getVariant('context', 'feature_d')).toEqual(null);
+        expect(_core.getVariant('context', 'featureD')).toEqual(null);
+    });
+
+    it('should apply overrides from json', function() {
+        _core.applyOverrides(_overrides);
+
+        expect(_core.getVariant('context', 'featureA')).toEqual('variantA');
+        expect(_core.getVariant('context', 'featureC')).toEqual('variantE');
+        expect(_core.getVariant('context', 'featureH')).toEqual('variantA');
+    });
+
+    it('should apply overrides from json string', function() {
+        _core.applyOverrides(JSON.stringify(_overrides));
+
+        expect(_core.getVariant('context', 'featureA')).toEqual('variantA');
+        expect(_core.getVariant('context', 'featureC')).toEqual('variantE');
+        expect(_core.getVariant('context', 'featureH')).toEqual('variantA');
+    });
+
+    it('should apply overrides from string', function() {
+        _core.applyOverrides('featureA,featureB:variantA,featureC:variantE,featureH:variantA');
+
+        expect(_core.getVariant('context', 'featureA')).toEqual('on');
+        expect(_core.getVariant('context', 'featureB')).toEqual('variantA');
+        expect(_core.getVariant('context', 'featureC')).toEqual('variantE');
+        expect(_core.getVariant('context', 'featureH')).toEqual('variantA');
     });
 });
