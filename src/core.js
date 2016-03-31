@@ -18,14 +18,6 @@ var _roller = require('./roller');
 var _features = {};
 
 /**
- * Cache in which winning variants are stored
- *
- * @type {object}
- * @private
- */
-var _cache = {};
-
-/**
  * Sets and parses configured features
  *
  * @param {object} features
@@ -47,28 +39,9 @@ function setFeatures(features) {
  *
  * @param {string} context
  * @param {string} name
- * @returns {string}
+ * @returns {string|null}
  */
 function getVariant(context, name) {
-    var featureId = _getFeatureId(context, name);
-
-    // Check if feature is cached
-    if (!_cache.hasOwnProperty(featureId)) {
-        _cache[featureId] = _getFreshVariant(context, name);
-    }
-
-    return _cache[featureId];
-}
-
-/**
- * Gets a winning variant for a specified feature without checking cache
- *
- * @param {string} context
- * @param {string} name
- * @returns {string|null}
- * @private
- */
-function _getFreshVariant(context, name) {
     // Check if this feature is defined
     if (!_features.hasOwnProperty(name)) {
         return null;

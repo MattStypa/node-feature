@@ -43,6 +43,11 @@ describe('feature library', function() {
         expect(_core.getVariant('context', 'feature_b')).toEqual('on');
     });
 
+    it('gets variant for multi-variant features', function() {
+        _roller.roll.mockReturnValue(30);
+        expect(_core.getVariant('context', 'feature_c')).toEqual('variant_c');
+    });
+
     it('gets null variant for disabled features', function() {
         expect(_core.getVariant('context', 'feature_a')).toEqual(null);
     });
@@ -59,28 +64,6 @@ describe('feature library', function() {
 
     it('gets null for undefined feature', function() {
         expect(_core.getVariant('context', 'feature_x')).toEqual(null);
-    });
-
-    it('gets a cached variant', function() {
-        _roller.roll.mockReturnValue(10);
-        expect(_core.getVariant('context', 'feature_c')).toEqual('variant_b');
-
-        _roller.roll.mockReturnValue(90);
-        expect(_core.getVariant('context', 'feature_c')).toEqual('variant_b');
-    });
-
-    it('gets a variant for each context individually', function() {
-        _roller.roll.mockReturnValue(10);
-        expect(_core.getVariant('context_a', 'feature_c')).toEqual('variant_b');
-
-        _roller.roll.mockReturnValue(30);
-        expect(_core.getVariant('context_b', 'feature_c')).toEqual('variant_c');
-
-        _roller.roll.mockReturnValue(50);
-        expect(_core.getVariant('context_c', 'feature_c')).toEqual('variant_d');
-
-        _roller.roll.mockReturnValue(99.9);
-        expect(_core.getVariant('context_d', 'feature_c')).toEqual('variant_d');
     });
 
     it('gets null if no variant wins', function() {
