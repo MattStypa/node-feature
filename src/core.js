@@ -1,5 +1,6 @@
 module.exports.setFeatures = setFeatures;
 module.exports.getVariant = getVariant;
+module.exports.getVariantDigest = getVariantDigest;
 
 /**
  * Instance of a roller
@@ -72,6 +73,22 @@ function getVariant(context, name) {
     }
 
     return null;
+}
+
+/**
+ * Returns a collection of each feature with selected variant
+ *
+ * @param {string} context
+ * @returns {object}
+ */
+function getVariantDigest(context) {
+    var featureDigest = {};
+
+    for (var feature in _features) {
+        featureDigest[feature] = getVariant(context, feature);
+    }
+
+    return featureDigest;
 }
 
 /**

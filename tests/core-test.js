@@ -52,6 +52,20 @@ describe('feature library', function() {
         expect(_core.getVariant('context', 'feature_a')).toEqual(null);
     });
 
+    it('gets variant digest', function() {
+        _roller.roll.mockReturnValue(30);
+        expect(_core.getVariantDigest('context')).toEqual({
+
+            'feature_a': null,
+            'feature_b': 'on',
+            'feature_c': 'variant_c',
+            'feature_d': null,
+            'feature_e': null,
+            'feature_f': null,
+            'feature_g': null,
+        });
+    });
+
     it('normalizes negative odds to 0', function() {
         _roller.roll.mockReturnValue(0);
         expect(_core.getVariant('context', 'feature_f')).toEqual(null);
