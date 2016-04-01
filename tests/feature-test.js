@@ -1,9 +1,9 @@
-jest.dontMock('feature');
+jest.dontMock('../src/feature');
 
 describe('feature', function() {
 
-    var _feature = require('feature');
-    var _core = require('core');
+    var _feature = require('../src/feature');
+    var _core = require('../src/core');
 
     it('should export constructor', function() {
         expect(typeof _feature).toEqual('function');

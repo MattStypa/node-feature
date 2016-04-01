@@ -1,9 +1,9 @@
-jest.dontMock('core');
+jest.dontMock('../src/core');
 
 describe('feature library', function() {
 
-    var _core = require('core');
-    var _roller = require('roller');
+    var _core = require('../src/core');
+    var _roller = require('../src/roller');
 
     var _featureConfig = {
         'feature_a': 0,

@@ -1,8 +1,8 @@
-jest.dontMock('roller');
+jest.dontMock('../src/roller');
 
 describe('roller', function() {
 
-    var _roller = require('roller');
+    var _roller = require('../src/roller');
 
     it('should accept numerical salts', function() {
         _roller.roll(Math.random());
