@@ -65,7 +65,10 @@ function applyOverrides(overrides) {
 
     for (var feature in parsedOverrides) {
         _features[feature] = {};
-        _features[feature][parsedOverrides[feature]] = 100;
+
+        if (parsedOverrides[feature]) {
+            _features[feature][parsedOverrides[feature]] = 100;
+        }
     }
 }
 

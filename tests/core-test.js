@@ -133,4 +133,12 @@ describe('feature library', function() {
         expect(_core.getVariant('context', 'featureC')).toEqual('variantE');
         expect(_core.getVariant('context', 'featureH')).toEqual('variantA');
     });
+
+    it('allows to override a feature to return null variant', function() {
+        _core.applyOverrides({
+            featureA: null
+        });
+
+        expect(_core.getVariant('context', 'featureA')).toEqual(null);
+    });
 });
