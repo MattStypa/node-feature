@@ -28,7 +28,7 @@ describe('feature library', function() {
         'featureH': [
             'variantA',
             'variantB',
-            'variant_c',
+            'variantC',
         ]
     };
 
