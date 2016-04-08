@@ -25,6 +25,9 @@
         "lint": "jshint src/*.js tests/*.js",
         "cs": "jscs src/*.js tests/*.js"
     },
+    "dependencies": {
+        "lodash": "4.8.2"
+    },
     "devDependencies": {
         "jest-cli": "0.10.0",
         "jshint": "2.9.1",
