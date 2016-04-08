@@ -10,6 +10,10 @@ var roller = require('../src/roller');
  * @returns {object}
  */
 function feature(features) {
+    if (!_.isObject(features)) {
+        throw Error('Invalid configuration');
+    }
+
     return {
         features: _getParsedFeatureConfig(features),
         getDigest: function(context, overrides) {
@@ -19,7 +23,8 @@ function feature(features) {
 }
 
 /**
- * Gets features digest
+ * Gets a features digest. Digest is an object containing feature names as keys and a single winning variant as the
+ * value for each feature.
  *
  * @param {object} features
  * @param {string} context
@@ -44,31 +49,34 @@ function _getDigest(features, context, overrides) {
  * @private
  */
 function _getVariant(feature, context) {
-    var variants = Object.keys(feature);
+    var variants = _.keys(feature);
+    var odds = _.values(feature);
 
     if (!variants.length) {
         return null;
     }
 
     // First variant is a sure winner
-    if (feature[variants[0]] >= 100) {
-        return variants[0];
+    if (_.first(odds) >= 100) {
+        return _.first(variants);
     }
 
     // No chance of winning
-    if (feature[variants[variants.length - 1]] === 0) {
+    if (_.last(odds) === 0) {
         return null;
     }
 
     var roll = roller.roll(context);
 
-    for (var variant in feature) {
-        if (roll < feature[variant]) {
-            return variant.toString();
-        }
+    var variant = _.findIndex(odds, function(odds) {
+        return roll < odds;
+    });
+
+    if (variant < 0) {
+        return null;
     }
 
-    return null;
+    return variants[variant];
 }
 
 /**
@@ -79,15 +87,11 @@ function _getVariant(feature, context) {
  * @private
  */
 function _getParsedFeatureConfig(features) {
-    if (typeof features !== 'object') {
-        throw Error('Invalid configuration');
-    }
-
     var parsedFeatureConfig = {};
 
-    for (var feature in features) {
-        parsedFeatureConfig[feature] = _getParsedSingleFeatureConfig(features[feature]);
-    }
+    _.forEach(features, function(config, name) {
+        parsedFeatureConfig[name] = _getParsedSingleFeatureConfig(config);
+    });
 
     return parsedFeatureConfig;
 }
@@ -101,34 +105,33 @@ function _getParsedFeatureConfig(features) {
  */
 function _getParsedSingleFeatureConfig(feature) {
     // Shorthand
-    if (typeof feature !== 'object') {
+    if (!_.isObject(feature)) {
         return {'on': _getSanitizedOdds(feature)};
     }
 
     var parsedFeatureConfig = {};
     var totalOdds = 0;
-    var variant;
 
     // Auto distribute
-    if (Array.isArray(feature)) {
+    if (_.isArray(feature)) {
         var autoOdds = 100 / feature.length;
 
-        for (variant in feature) {
+        _.forEach(feature, function(variant) {
             totalOdds += autoOdds;
-            parsedFeatureConfig[feature[variant]] = totalOdds;
-        }
+            parsedFeatureConfig[variant] = totalOdds;
+        });
 
         // Ensure complete coverage
-        parsedFeatureConfig[feature[variant]] = 100;
+        parsedFeatureConfig[_.last(feature)] = 100;
 
         return parsedFeatureConfig;
     }
 
     // Full
-    for (variant in feature) {
-        totalOdds += _getSanitizedOdds(feature[variant]);
-        parsedFeatureConfig[variant] = totalOdds;
-    }
+    _.forEach(feature, function(odds, name) {
+        totalOdds += _getSanitizedOdds(odds);
+        parsedFeatureConfig[name] = totalOdds;
+    });
 
     return parsedFeatureConfig;
 }
@@ -149,7 +152,7 @@ function _getParsedOverrides(overrides) {
         parsedOverrides = overrides;
     }
 
-    if (typeof parsedOverrides !== 'object') {
+    if (!_.isObject(parsedOverrides)) {
         parsedOverrides = _getParsedStringOverrides(overrides);
     } else {
         parsedOverrides = _.mapValues(parsedOverrides, function(value) {
