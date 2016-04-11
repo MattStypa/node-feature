@@ -194,7 +194,9 @@ function _getParsedStringOverrides(overrides) {
  * @private
  */
 function _getSanitizedOdds(odds) {
-    if (isNaN(odds)) {
+    if (_.isBoolean(odds)) {
+        odds = odds ? 100 : 0;
+    } else if (!_.isNumber(odds)) {
         return 0;
     }
     return odds < 0 ? 0 : odds;
