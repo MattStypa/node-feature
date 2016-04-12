@@ -29,7 +29,9 @@ describe('feature', function() {
             'variantA',
             'variantB',
             'variantC',
-        ]
+        ],
+        featureI: true,
+        featureJ: false,
     };
 
     var _overrides = {
@@ -67,7 +69,9 @@ describe('feature', function() {
             'featureE': null,
             'featureF': null,
             'featureG': null,
-            'featureH': 'variantA'
+            'featureH': 'variantA',
+            'featureI': 'on',
+            'featureJ': null
         });
     });
 
