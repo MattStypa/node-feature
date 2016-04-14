@@ -44,24 +44,16 @@ describe('feature', function() {
         roller.roll.mockClear();
     });
 
-    it('should export instantiated feature object', function() {
-        var features = feature({});
-
-        expect(typeof features).toEqual('object');
-        expect(typeof features.getDigest).toEqual('function');
-    });
-
     it('should throw error on invalid configuration', function() {
         expect(function() {
-            feature('invalid');
+            feature('invalid', 'context');
         }).toThrow();
     });
 
     it('should get variant digest ', function() {
         roller.roll.mockReturnValue(30);
-        var features = feature(_featureConfig);
 
-        expect(features.getDigest('context')).toEqual({
+        expect(feature(_featureConfig, 'context')).toEqual({
             'featureA': null,
             'featureB': 'on',
             'featureC': 'variantC',
@@ -76,37 +68,37 @@ describe('feature', function() {
     });
 
     it('should pass context to roller', function() {
-        var features = feature(_featureConfig);
-        features.getDigest('context');
+        feature(_featureConfig, 'context');
 
         expect(roller.roll.mock.calls[0][0]).toEqual('contextfeatureC');
     });
 
     it('should apply overrides from json', function() {
-        var features = feature(_featureConfig);
-        var digest = features.getDigest('context', _overrides);
+        var features = feature(_featureConfig, 'context', _overrides);
 
-        expect(digest.featureA).toEqual('variantA');
-        expect(digest.featureC).toEqual('variantE');
-        expect(digest.featureH).toEqual('variantA');
+        expect(features.featureA).toEqual('variantA');
+        expect(features.featureC).toEqual('variantE');
+        expect(features.featureH).toEqual('variantA');
     });
 
     it('should apply overrides from json string', function() {
-        var features = feature(_featureConfig);
-        var digest = features.getDigest('context', JSON.stringify(_overrides));
+        var features = feature(_featureConfig, 'context', JSON.stringify(_overrides));
 
-        expect(digest.featureA).toEqual('variantA');
-        expect(digest.featureC).toEqual('variantE');
-        expect(digest.featureH).toEqual('variantA');
+        expect(features.featureA).toEqual('variantA');
+        expect(features.featureC).toEqual('variantE');
+        expect(features.featureH).toEqual('variantA');
     });
 
     it('should apply overrides from string', function() {
-        var features = feature(_featureConfig);
-        var digest = features.getDigest('context', 'featureA,featureB:variantA,featureC:variantE,featureH:variantA');
+        var features = feature(
+            _featureConfig,
+            'context',
+            'featureA,featureB:variantA,featureC:variantE,featureH:variantA'
+        );
 
-        expect(digest.featureA).toEqual('on');
-        expect(digest.featureB).toEqual('variantA');
-        expect(digest.featureC).toEqual('variantE');
-        expect(digest.featureH).toEqual('variantA');
+        expect(features.featureA).toEqual('on');
+        expect(features.featureB).toEqual('variantA');
+        expect(features.featureC).toEqual('variantE');
+        expect(features.featureH).toEqual('variantA');
     });
 });
