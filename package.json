@@ -1,6 +1,6 @@
 {
-    "name": "@dose/feature",
-    "version": "1.0.0",
+    "name": "node-feature",
+    "version": "1.0.1",
     "description": "Simple Feature API enabling rampups and A/B testing.",
     "license": "MIT",
     "keywords": [
@@ -16,7 +16,7 @@
     "repository" :
     {
         "type": "git",
-        "url": "https://bitbucket.org/spartz/node-feature.git"
+        "url": "https://github.com/SpartzInc/node-feature"
     },
     "main": "src/feature.js",
     "scripts": {
