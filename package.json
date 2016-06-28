@@ -1,6 +1,6 @@
 {
     "name": "node-feature",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Simple Feature API enabling rampups and A/B testing.",
     "license": "MIT",
     "keywords": [
