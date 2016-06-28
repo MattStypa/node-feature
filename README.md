@@ -1,5 +1,10 @@
 # Feature
 
+[![Build Status](https://travis-ci.org/MattStypa/node-feature.svg?branch=master)](https://travis-ci.org/MattStypa/node-feature)
+[![Latest Stable Version](https://img.shields.io/npm/v/node-feature.svg)](https://www.npmjs.com/package/node-feature)
+[![Total Downloads](https://img.shields.io/npm/dt/node-feature.svg)](https://www.npmjs.com/package/node-feature)
+[![License](https://img.shields.io/npm/l/node-feature.svg)](https://www.npmjs.com/package/node-feature)
+
 Feature is a rampup and AB testing library for Node. It is a port of our Laravel library and has a very similar functionality.
 
 ## How to use
